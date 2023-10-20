@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add User</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row">
+
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Add User
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="./userlist.html" class="btn btn-primary">Back To User List</a>
+                     </div>
+                </div>
+                <div class="card-body">
+                    
+                    <form id="addUserForm">
+                        <div class="form-group">
+                            <label for="Name">Name</label>
+                            <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter Name" required>
+                            <small id="nameValidationMessage" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="EmailId">Email</label>
+                            <input type="email" class="form-control" id="EmailId" name="EmailId" placeholder="Enter Email" required>
+                            <small id="emailValidationMessage" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="MobileNumber">Mobile Number</label>
+                            <input type="text" class="form-control" id="MobileNumber" name="MobileNumber" placeholder="Enter Mobile Number" required>
+                            <small id="mobileValidationMessage" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="UserId">User ID</label>
+                            <input type="text" class="form-control" id="UserId" name="UserId" placeholder="Enter User ID" required>
+                            <small id="userIdValidationMessage" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="Password">Password</label>
+                            <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const nameField = document.getElementById('Name');
+    const emailField = document.getElementById('EmailId');
+    const mobileField = document.getElementById('MobileNumber');
+    const userIdField = document.getElementById('UserId');
+    const nameValidationMessage = document.getElementById('nameValidationMessage');
+    const emailValidationMessage = document.getElementById('emailValidationMessage');
+    const mobileValidationMessage = document.getElementById('mobileValidationMessage');
+    const userIdValidationMessage = document.getElementById('userIdValidationMessage');
+
+    nameField.addEventListener('input', function() {
+        // Real-time validation for Name
+        const name = nameField.value;
+        if (name.length > 200) {
+            nameValidationMessage.textContent = 'Name should be less than 200 characters';
+        } else {
+            nameValidationMessage.textContent = '';
+        }
+    });
+
+    emailField.addEventListener('input', function() {
+        // Real-time validation for Email
+        const email = emailField.value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.match(emailRegex)) {
+            emailValidationMessage.textContent = 'Enter a valid email address';
+        } else {
+            emailValidationMessage.textContent = '';
+        }
+    });
+
+    mobileField.addEventListener('input', function() {
+        // Real-time validation for Mobile Number
+        const mobile = mobileField.value;
+        if (isNaN(mobile)) {
+            mobileValidationMessage.textContent = 'Mobile number should contain only digits';
+        } else {
+            mobileValidationMessage.textContent = '';
+        }
+    });
+
+    userIdField.addEventListener('input', function() {
+        // Real-time validation for User ID
+        const userId = userIdField.value;
+        const userIdRegex = /^[A-Za-z0-9]{1,20}$/;
+        if (!userId.match(userIdRegex)) {
+            userIdValidationMessage.textContent = 'User ID should be alphanumeric and less than 20 characters';
+        } else {
+            userIdValidationMessage.textContent = '';
+        }
+    });
+
+    document.getElementById('addUserForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch("https://localhost:7133/CreateUser", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.id) {
+                // alert("User added successfully.");
+                // Optionally, you can redirect to a user list page here.
+                window.location.href = "./userlist.html";
+            } else {
+                // alert("Failed to add the user.");
+                window.location.href = "./userlist.html";
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            window.location.href = "./userlist.html";
+        });
+    });
+</script>
+
+</body>
+</html>
